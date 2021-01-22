@@ -6,7 +6,7 @@ export default {
     username: string,
     email: string,
     password: string
-  ): Promise<User | string> {
+  ): Promise<User | null> {
     try {
       const user = await pool.query(
         "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING *",
@@ -15,7 +15,7 @@ export default {
       return user.rows[0];
     } catch (err) {
       console.error(err);
-      return err.message;
+      return null;
     }
   },
 };
