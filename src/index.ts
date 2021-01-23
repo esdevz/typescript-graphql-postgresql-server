@@ -3,7 +3,7 @@ import { ApolloServer, UserInputError } from "apollo-server-express";
 import express from "express";
 import dotenv from "dotenv";
 import { buildSchema } from "type-graphql";
-import { UserResolver } from "./graphql/resolvers/users";
+import { UserResolver } from "./graphql/resolvers/users/user";
 import { Hello } from "./graphql/resolvers/hello";
 // import { Client } from "pg";
 const PORT = 5000 || process.env.PORT;

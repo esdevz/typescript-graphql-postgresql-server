@@ -1,4 +1,4 @@
-import { User } from "src/graphql/typeDefs/users";
+import { User } from "src/graphql/resolvers/users/user.type";
 import pool from "../client";
 
 export default {
