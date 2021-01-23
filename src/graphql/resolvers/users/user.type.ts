@@ -1,4 +1,4 @@
-import { IsEmail, Length, MaxLength } from "class-validator";
+import { IsEmail, Length, MaxLength, MinLength } from "class-validator";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 
 @ObjectType()
@@ -31,5 +31,18 @@ export class Credentials {
   email: string;
 
   @Field()
+  @MinLength(6, { message: "minimum password length is 6" })
+  password: string;
+}
+
+@InputType()
+export class LoginCredentials {
+  @Field()
+  @MaxLength(30, { message: "email too long" })
+  @IsEmail({}, { message: "invalid email" })
+  email: string;
+
+  @Field()
+  @MinLength(6, { message: "minimum password length is 6" })
   password: string;
 }
