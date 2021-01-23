@@ -9,7 +9,7 @@ export default {
   ): Promise<User | null | Error> {
     try {
       const user = await pool.query(
-        "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING *",
+        "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING id , username ,email , created_at",
         [username, email, password]
       );
       return user.rows[0];
