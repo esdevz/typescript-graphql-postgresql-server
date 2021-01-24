@@ -7,15 +7,22 @@ export default {
     email: string,
     password: string
   ): Promise<User | null | Error> {
+    const client = await pool.connect()
     try {
-      const user = await pool.query(
+      
+      await client.query("BEGIN");
+      const user = await client.query(
         "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING id , username ,email , created_at",
         [username, email, password]
       );
+      await client.query("COMMIT");
       return user.rows[0];
     } catch (err) {
       console.error(err);
+      await client.query("ROLLBACK")
       return err;
+    }finally{
+     client.release() 
     }
   },
   async getUser(key: string, value: string): Promise<User | null> {
