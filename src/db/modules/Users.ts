@@ -6,10 +6,9 @@ export default {
     username: string,
     email: string,
     password: string
-  ): Promise<User | null | Error> {
-    const client = await pool.connect()
+  ): Promise<User> {
+    const client = await pool.connect();
     try {
-      
       await client.query("BEGIN");
       const user = await client.query(
         "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING id , username ,email , created_at",
@@ -19,13 +18,13 @@ export default {
       return user.rows[0];
     } catch (err) {
       console.error(err);
-      await client.query("ROLLBACK")
+      await client.query("ROLLBACK");
       return err;
-    }finally{
-     client.release() 
+    } finally {
+      client.release();
     }
   },
-  async getUser(key: string, value: string): Promise<User | null> {
+  async getUser(key: string, value: string | number): Promise<User | null> {
     try {
       const user = await pool.query(`SELECT * FROM users where ${key}= $1`, [
         value,
