@@ -8,3 +8,7 @@ export const getSession = (session: MySessionData): number | null => {
   }
   return userId;
 };
+
+export const containsStr = (source: string, target: string[]): boolean => {
+  return target.every((str) => source.includes(str));
+};
