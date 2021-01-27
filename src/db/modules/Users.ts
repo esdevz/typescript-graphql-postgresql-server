@@ -11,7 +11,7 @@ export default {
     try {
       await client.query("BEGIN");
       const user = await client.query(
-        "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING id , username ,email , created_at",
+        "INSERT INTO users(username , email , password) VALUES($1,$2,$3) RETURNING id , username ,email , avatar, created_at",
         [username, email, password]
       );
       await client.query("COMMIT");
@@ -35,6 +35,24 @@ export default {
       return user.rows[0];
     } catch (err) {
       return null;
+    }
+  },
+  async updateAvatar(newAvatart: string, userId: number): Promise<string> {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const user = await client.query(
+        `UPDATE users SET avatar=$1 WHERE id=${userId} RETURNING id username email avatar created_at`,
+        [newAvatart]
+      );
+      await client.query("COMMIT");
+      return user.rows[0];
+    } catch (err) {
+      console.error(err);
+      await client.query("ROLLBACK");
+      return err;
+    } finally {
+      client.release();
     }
   },
 };
