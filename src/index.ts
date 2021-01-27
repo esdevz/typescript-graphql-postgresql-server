@@ -64,9 +64,11 @@ dotenv.config();
       }
     },
   });
+
   apolloServer.applyMiddleware({
     app,
     cors: {
+      origin: process.env.ORIGIN,
       credentials: true,
     },
   });
