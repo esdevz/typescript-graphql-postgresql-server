@@ -11,7 +11,7 @@ import { Hello } from "./graphql/resolvers/hello";
 import { Chat } from "./graphql/subscriptions/chat/chat";
 import pool from "./db/client";
 import { MyCtx } from "./graphql/types";
-import { getSession, containsStr } from "./utils";
+import { getSession } from "./utils";
 dotenv.config();
 
 (async function () {
@@ -57,8 +57,6 @@ dotenv.config();
           error.extensions?.exception.validationErrors[0].constraints
         )[0] as string;
         return new UserInputError(newError);
-      } else if (containsStr(error.message, ["username", "duplicate"])) {
-        return new UserInputError("username is taken");
       } else {
         return error;
       }

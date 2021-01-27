@@ -27,10 +27,6 @@ export class UserResolver {
     @Ctx() { req }: MyCtx
   ) {
     try {
-      const exists = await Users.getUser("email", email);
-      if (exists) {
-        return new UserInputError("user already exists");
-      }
       const hashedPass = await argon2.hash(password);
       const user = await Users.register(username, email, hashedPass);
       req.session.userId = user.id;
