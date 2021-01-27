@@ -16,6 +16,9 @@ export class User {
   @Field()
   password: string;
 
+  @Field({ nullable: true })
+  avatar?: string;
+
   @Field()
   created_at: string;
 }
