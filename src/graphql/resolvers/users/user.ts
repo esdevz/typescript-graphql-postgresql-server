@@ -1,7 +1,7 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Credentials, LoginCredentials, User } from "./user.type";
 import Users from "../../../db/modules/Users";
-import { AuthenticationError, UserInputError } from "apollo-server";
+import { ApolloError, UserInputError } from "apollo-server";
 import argon2 from "argon2";
 import { MyCtx } from "src/graphql/types";
 
@@ -11,7 +11,7 @@ export class UserResolver {
   async me(@Ctx() { userId }: MyCtx) {
     try {
       if (!userId) {
-        return new AuthenticationError("not authorized");
+        return new ApolloError("there is no logged in user");
       }
       const user = await Users.getUser("id", userId);
       return user;
@@ -58,5 +58,19 @@ export class UserResolver {
       console.error(err);
       return err;
     }
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyCtx) {
+    return new Promise((resolve) => {
+      res.clearCookie("UAT");
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+          return resolve(true);
+        }
+      });
+      return resolve(true);
+    });
   }
 }
