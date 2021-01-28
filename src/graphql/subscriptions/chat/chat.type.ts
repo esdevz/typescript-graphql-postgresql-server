@@ -3,7 +3,7 @@ import { ObjectType, Field } from "type-graphql";
 @ObjectType()
 export class ChatMessage {
   @Field()
-  sentTo: string;
+  sub: string;
 
   @Field()
   username: string;
