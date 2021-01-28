@@ -20,6 +20,7 @@ export class Chat {
   ): Promise<string> {
     try {
       await pubsub.publish(to, {
+        sub: to,
         username,
         body,
         timestamp: new Date(),
@@ -32,13 +33,13 @@ export class Chat {
   }
 
   @Subscription({
-    topics: ({ args }) => args.to,
+    topics: ({ args }) => args.mySubs,
   })
   messages(
-    @Arg("to") to: string,
+    @Arg("mySubs", () => [String]) mySubs: string[],
     @Root()
     msg: ChatMessage
   ): ChatMessage {
-    return { ...msg, sentTo: to };
+    return msg;
   }
 }
