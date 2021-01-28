@@ -37,7 +37,7 @@ export default {
       return null;
     }
   },
-  async updateAvatar(newAvatart: string, userId: number): Promise<string> {
+  async updateAvatar(newAvatart: string, userId: number): Promise<User> {
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
