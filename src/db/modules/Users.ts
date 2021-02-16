@@ -1,3 +1,4 @@
+import { Community } from "src/graphql/resolvers/communities/communities.type";
 import { User } from "src/graphql/resolvers/users/user.type";
 import pool from "../client";
 
@@ -53,6 +54,23 @@ export default {
       return err;
     } finally {
       client.release();
+    }
+  },
+  async getCommunities(userId: number): Promise<Community[] | null> {
+    try {
+      const communities = await pool.query(
+        `SELECT id , name ,cover , cover_image , description , comm_admin FROM members
+      INNER JOIN communities ON communities.id = members.communityId WHERE memberId = $1`,
+        [userId]
+      );
+      if (communities.rows.length === 0) {
+        return null;
+      }
+
+      return communities.rows;
+    } catch (err) {
+      console.error(err);
+      return null;
     }
   },
 };
