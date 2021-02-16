@@ -12,6 +12,7 @@ import { Chat } from "./graphql/subscriptions/chat/chat";
 import pool from "./db/client";
 import { MyCtx } from "./graphql/types";
 import { getSession } from "./utils";
+import { CommunityResolver } from "./graphql/resolvers/communities/communities";
 dotenv.config();
 
 (async function () {
@@ -42,7 +43,7 @@ dotenv.config();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, Hello, Chat],
+      resolvers: [UserResolver, Hello, Chat, CommunityResolver],
     }),
     context: ({ req, res, connection }): MyCtx => {
       if (connection) {
@@ -66,7 +67,7 @@ dotenv.config();
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: process.env.ORIGIN,
+      origin: [process.env.ORIGIN!, process.env.ORIGIN2!],
       credentials: true,
     },
   });
