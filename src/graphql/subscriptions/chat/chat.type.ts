@@ -1,9 +1,12 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, ID } from "type-graphql";
 
 @ObjectType()
 export class ChatMessage {
   @Field()
   sub: string;
+
+  @Field(() => ID)
+  id: string;
 
   @Field()
   username: string;
@@ -11,6 +14,6 @@ export class ChatMessage {
   @Field()
   body: string;
 
-  @Field(() => Date)
-  timestamp: Date;
+  @Field()
+  timestamp: number;
 }

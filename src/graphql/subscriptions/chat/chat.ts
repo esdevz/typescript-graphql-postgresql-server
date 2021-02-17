@@ -16,14 +16,16 @@ export class Chat {
     @PubSub() pubsub: PubSubEngine,
     @Arg("to") to: string,
     @Arg("body") body: string,
-    @Arg("username") username: string
+    @Arg("username") username: string,
+    @Arg("id") id: string
   ): Promise<string> {
     try {
       await pubsub.publish(to, {
         sub: to,
         username,
+        id,
         body,
-        timestamp: new Date(),
+        timestamp: Date.now(),
       });
       return "message sent";
     } catch (err) {
