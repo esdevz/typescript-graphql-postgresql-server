@@ -60,7 +60,7 @@ export default {
     try {
       const communities = await pool.query(
         `SELECT id , name ,cover , cover_image , description , comm_admin FROM members
-      INNER JOIN communities ON communities.id = members.communityId WHERE memberId = $1`,
+      INNER JOIN communities ON communities.id = members.community_id WHERE member_id = $1`,
         [userId]
       );
       if (communities.rows.length === 0) {
@@ -71,6 +71,39 @@ export default {
     } catch (err) {
       console.error(err);
       return null;
+    }
+  },
+  async createGroup(
+    name: string,
+    cover: string,
+    cover_image: string,
+    description: string,
+    user_id: number
+  ): Promise<Community> {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const group = await client.query(
+        `WITH created_comm AS ( INSERT INTO communities 
+              (name , cover , cover_image , description , comm_admin )
+                  values
+              ($1 , $2 ,$3, $4, $5 )
+              RETURNING *
+            ) , add_members AS (
+             INSERT INTO members (community_id , member_id)
+              select id , comm_admin from created_comm
+            )
+            select id ,name , cover , cover_image , description , comm_admin from created_comm`,
+        [name, cover, cover_image, description, user_id]
+      );
+      await client.query("COMMIT");
+      return group.rows[0];
+    } catch (err) {
+      console.error(err);
+      await client.query("ROLLBACK");
+      return err;
+    } finally {
+      client.release();
     }
   },
 };
