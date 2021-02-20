@@ -1,3 +1,4 @@
+import { ArrayMinSize } from "class-validator";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 import { RequiredString } from "../../../decorators/RequiredString";
 
@@ -34,4 +35,14 @@ export class GroupDetails {
   @Field()
   @RequiredString({ message: "group description is required" })
   description: string;
+}
+
+@InputType()
+export class MembersDetails {
+  @Field()
+  groupId: number;
+
+  @Field(() => [Number])
+  @ArrayMinSize(1, { message: "members list is empty" })
+  users: number[];
 }
