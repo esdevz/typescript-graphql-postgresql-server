@@ -43,4 +43,22 @@ export class CommunityResolver {
       return err;
     }
   }
+
+  @Mutation(() => String)
+  async addMembers(
+    @Ctx() { userId }: MyCtx,
+    @Arg("groupId") groupId: number,
+    @Arg("users", () => [Number]) users: number[]
+  ) {
+    if (!userId) {
+      return new AuthenticationError("not authorized");
+    }
+    try {
+      const status = await Users.addMembers([groupId, ...users]);
+      return status;
+    } catch (err) {
+      console.error(err);
+      return err;
+    }
+  }
 }

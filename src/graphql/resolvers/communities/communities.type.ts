@@ -1,5 +1,5 @@
-import { IsNotEmpty } from "class-validator";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
+import { RequiredString } from "../../../decorators/RequiredString";
 
 @ObjectType()
 export class Community {
@@ -22,7 +22,7 @@ export class Community {
 @InputType()
 export class GroupDetails {
   @Field()
-  @IsNotEmpty({ message: "group name is required" })
+  @RequiredString({ message: "group name is required" })
   name: string;
 
   @Field({ nullable: true })
@@ -32,5 +32,6 @@ export class GroupDetails {
   cover_image?: string;
 
   @Field()
+  @RequiredString({ message: "group description is required" })
   description: string;
 }
