@@ -2,7 +2,7 @@ import { ApolloError, AuthenticationError } from "apollo-server";
 import Users from "../../../db/modules/Users";
 import { MyCtx } from "src/graphql/types";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { Community, GroupDetails } from "./communities.type";
+import { Community, GroupDetails, MembersDetails } from "./communities.type";
 
 @Resolver()
 export class CommunityResolver {
@@ -47,8 +47,7 @@ export class CommunityResolver {
   @Mutation(() => String)
   async addMembers(
     @Ctx() { userId }: MyCtx,
-    @Arg("groupId") groupId: number,
-    @Arg("users", () => [Number]) users: number[]
+    @Arg("members") { groupId, users }: MembersDetails
   ) {
     if (!userId) {
       return new AuthenticationError("not authorized");
