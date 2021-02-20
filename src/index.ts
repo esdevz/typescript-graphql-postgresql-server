@@ -13,6 +13,7 @@ import pool from "./db/client";
 import { MyCtx } from "./graphql/types";
 import { getSession } from "./utils";
 import { CommunityResolver } from "./graphql/resolvers/communities/communities";
+import { Contacts } from "./graphql/resolvers/users/contacts";
 dotenv.config();
 
 (async function () {
@@ -43,7 +44,7 @@ dotenv.config();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, Hello, Chat, CommunityResolver],
+      resolvers: [UserResolver, Hello, Chat, CommunityResolver, Contacts],
     }),
     context: ({ req, res, connection }): MyCtx => {
       if (connection) {
@@ -63,7 +64,7 @@ dotenv.config();
       }
     },
   });
-
+  console.log(process.env.ORIGIN2);
   apolloServer.applyMiddleware({
     app,
     cors: {
