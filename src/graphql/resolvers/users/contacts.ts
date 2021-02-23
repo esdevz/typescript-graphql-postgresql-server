@@ -1,6 +1,6 @@
 import Users from "../../../db/modules/Users";
 import { MyCtx } from "../../types";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
 import { Contact } from "./contacts.type";
 import { AuthenticationError } from "apollo-server";
 
@@ -21,12 +21,12 @@ export class Contacts {
   }
 
   @Query(() => [Contact])
-  async contactList(@Ctx() { userId }: MyCtx) {
+  async contactList(@Ctx() { userId }: MyCtx, @Arg("search") search: string) {
     if (!userId) {
       return new AuthenticationError("not authorized");
     }
     try {
-      const contactList = await Users.getContactList();
+      const contactList = await Users.getContactList(search);
       return contactList;
     } catch (err) {
       console.error(err);
@@ -37,7 +37,7 @@ export class Contacts {
   @Mutation(() => Contact)
   async newContact(
     @Ctx() { userId }: MyCtx,
-    @Arg("contact") contactId: number
+    @Arg("contact", () => ID) contactId: number
   ) {
     try {
       if (!userId) {
