@@ -1,4 +1,4 @@
-import { Community } from "src/graphql/resolvers/communities/communities.type";
+import { Community } from "../../graphql/resolvers/communities/communities.type";
 import { Contact } from "../../graphql/resolvers/users/contacts.type";
 import { User } from "src/graphql/resolvers/users/user.type";
 import pool from "../client";
@@ -58,21 +58,17 @@ export default {
       client.release();
     }
   },
-  async getCommunities(userId: number): Promise<Community[] | null> {
+  async getCommunities(userId: number): Promise<Community[]> {
     try {
       const communities = await pool.query(
         `SELECT id , name ,cover , cover_image , description , comm_admin FROM members
       INNER JOIN communities ON communities.id = members.community_id WHERE member_id = $1`,
         [userId]
       );
-      if (communities.rows.length === 0) {
-        return null;
-      }
-
       return communities.rows;
     } catch (err) {
       console.error(err);
-      return null;
+      return [];
     }
   },
   async createGroup(
@@ -146,12 +142,27 @@ export default {
       client.release();
     }
   },
-  async getContactList(): Promise<Contact[]> {
+  async getContactList(search: string): Promise<Contact[]> {
     try {
       const contactList = await pool.query(
-        `select id , username , avatar from users`
+        `select id , username , avatar from users  where username ilike $1`,
+        [`%${search}%`]
       );
       return contactList.rows;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  },
+  async getMembers(groupId: number): Promise<Contact[]> {
+    try {
+      const members = await pool.query(
+        `select id , username ,avatar from members
+      inner join users on users.id = members.member_id where
+      community_id =$1`,
+        [groupId]
+      );
+      return members.rows;
     } catch (err) {
       console.error(err);
       return [];
