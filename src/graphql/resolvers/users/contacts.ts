@@ -26,7 +26,7 @@ export class Contacts {
       return new AuthenticationError("not authorized");
     }
     try {
-      const contactList = await Users.getContactList(search);
+      const contactList = await Users.getContactList(search, userId);
       return contactList;
     } catch (err) {
       console.error(err);

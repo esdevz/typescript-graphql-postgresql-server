@@ -142,11 +142,15 @@ export default {
       client.release();
     }
   },
-  async getContactList(search: string): Promise<Contact[]> {
+  async getContactList(search: string, userId: number): Promise<Contact[]> {
     try {
       const contactList = await pool.query(
-        `select id , username , avatar from users  where username ilike $1`,
-        [`%${search}%`]
+        `select id , username , avatar from users  where ( username ilike $1 and  NOT EXISTS (
+          SELECT  
+          FROM   contact_list
+          WHERE  id = $2
+          ))`,
+        [`%${search}%`, userId]
       );
       return contactList.rows;
     } catch (err) {
