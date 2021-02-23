@@ -39,10 +39,10 @@ export class GroupDetails {
 
 @InputType()
 export class MembersDetails {
-  @Field()
+  @Field(() => ID)
   groupId: number;
 
-  @Field(() => [Number])
+  @Field(() => [ID])
   @ArrayMinSize(1, { message: "members list is empty" })
   users: number[];
 }
