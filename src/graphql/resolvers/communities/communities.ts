@@ -1,9 +1,9 @@
 import { ApolloError, AuthenticationError } from "apollo-server";
-import Users from "../../../db/modules/Users";
 import { MyCtx } from "src/graphql/types";
 import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
 import { Community, GroupDetails, MembersDetails } from "./communities.type";
 import { Contact } from "../users/contacts.type";
+import Groups from "../../../db/modules/Groups";
 
 @Resolver()
 export class CommunityResolver {
@@ -13,7 +13,7 @@ export class CommunityResolver {
       if (!userId) {
         return new ApolloError("there is no logged in user");
       }
-      const communities = await Users.getCommunities(userId);
+      const communities = await Groups.getCommunities(userId);
       return communities;
     } catch (err) {
       console.error(err);
@@ -30,7 +30,7 @@ export class CommunityResolver {
       return new AuthenticationError("not authorized");
     }
     try {
-      const members = await Users.getMembers(groupId);
+      const members = await Groups.getMembers(groupId);
       return members;
     } catch (err) {
       console.error(err);
@@ -48,7 +48,7 @@ export class CommunityResolver {
       if (!userId) {
         return new AuthenticationError("not authorized");
       }
-      const newGroup = await Users.createGroup(
+      const newGroup = await Groups.createGroup(
         name,
         cover || "",
         cover_image || "",
@@ -71,7 +71,7 @@ export class CommunityResolver {
       return new AuthenticationError("not authorized");
     }
     try {
-      const status = await Users.addMembers([groupId, ...users]);
+      const status = await Groups.addMembers([groupId, ...users]);
       return status;
     } catch (err) {
       console.error(err);
