@@ -10,6 +10,9 @@ export class Community {
   @Field()
   name: string;
 
+  @Field()
+  description: string;
+
   @Field({ nullable: true })
   cover?: string;
 
