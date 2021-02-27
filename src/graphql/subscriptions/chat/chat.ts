@@ -1,5 +1,6 @@
 import {
   Arg,
+  ID,
   Mutation,
   PubSub,
   PubSubEngine,
@@ -14,17 +15,17 @@ export class Chat {
   @Mutation(() => String)
   async sendMsg(
     @PubSub() pubsub: PubSubEngine,
-    @Arg("to") to: string,
+    @Arg("to", () => ID) to: string,
     @Arg("body") body: string,
     @Arg("username") username: string,
-    @Arg("id") id: string
+    @Arg("id", () => ID) id: string
   ): Promise<string> {
     try {
       await pubsub.publish(to, {
         sub: to,
         username,
         id,
-        body,
+        body: body || "...",
         timestamp: Date.now(),
       });
       return "message sent";
@@ -38,7 +39,7 @@ export class Chat {
     topics: ({ args }) => args.mySubs,
   })
   messages(
-    @Arg("mySubs", () => [String]) mySubs: string[],
+    @Arg("mySubs", () => [ID]) mySubs: string[],
     @Root()
     msg: ChatMessage
   ): ChatMessage {
