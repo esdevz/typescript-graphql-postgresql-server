@@ -1,7 +1,16 @@
 import Users from "../../../db/modules/Users";
 import { MyCtx } from "../../types";
-import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
-import { Contact } from "./contacts.type";
+import {
+  Arg,
+  Ctx,
+  ID,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Query,
+  Resolver,
+} from "type-graphql";
+import { Contact, ContactDetails, Notifications } from "./contacts.type";
 import { AuthenticationError } from "apollo-server";
 
 @Resolver()
@@ -34,6 +43,20 @@ export class Contacts {
     }
   }
 
+  @Query(() => Notifications)
+  async getNotifications(@Ctx() { userId }: MyCtx) {
+    try {
+      if (!userId) {
+        return [];
+      }
+      const myNotifications = await Users.getNotifications(userId);
+      return myNotifications;
+    } catch (err) {
+      console.error(err);
+      return err;
+    }
+  }
+
   @Mutation(() => Contact)
   async newContact(
     @Ctx() { userId }: MyCtx,
@@ -44,9 +67,35 @@ export class Contacts {
         return new AuthenticationError("not authorized");
       }
       const contact = await Users.addContact(userId, contactId);
+      await Users.clearContactRequest(contactId, userId);
       return contact;
     } catch (err) {
       console.error(err);
+      return err;
+    }
+  }
+
+  @Mutation(() => String)
+  async sendContactRequest(
+    @PubSub() pubsub: PubSubEngine,
+    @Arg("from") from: ContactDetails,
+    @Arg("contact") contact: ContactDetails,
+    @Ctx() { userId }: MyCtx
+  ) {
+    try {
+      if (!userId) {
+        return new AuthenticationError("not autorized");
+      }
+      const status = await Users.sendContactRequest(userId, contact.id);
+      await pubsub.publish(contact.username, {
+        sub: contact.username,
+        id: userId,
+        username: from.username,
+        body: `${from.username} sent you a friend request`,
+        timestamp: Date.now(),
+      });
+      return status;
+    } catch (err) {
       return err;
     }
   }
