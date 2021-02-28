@@ -70,7 +70,7 @@ const PORT = process.env.PORT || 5000;
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: [process.env.ORIGIN!, process.env.ORIGIN2!],
+      origin: process.env.ORIGIN!,
       credentials: true,
     },
   });
