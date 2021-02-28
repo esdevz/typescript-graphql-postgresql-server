@@ -39,7 +39,7 @@ export class Chat {
     topics: ({ args }) => args.mySubs,
   })
   messages(
-    @Arg("mySubs", () => [ID]) mySubs: string[],
+    @Arg("mySubs", () => [ID]) _mySubs: string[],
     @Root()
     msg: ChatMessage
   ): ChatMessage {
