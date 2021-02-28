@@ -16,6 +16,8 @@ import { CommunityResolver } from "./graphql/resolvers/communities/communities";
 import { Contacts } from "./graphql/resolvers/users/contacts";
 dotenv.config();
 
+const PORT = process.env.PORT || 5000;
+
 (async function () {
   const app = express();
   const pgSession = connectPg(session);
@@ -64,7 +66,7 @@ dotenv.config();
       }
     },
   });
-  console.log(process.env.ORIGIN2);
+
   apolloServer.applyMiddleware({
     app,
     cors: {
@@ -74,7 +76,7 @@ dotenv.config();
   });
   apolloServer.installSubscriptionHandlers(httpServer);
   try {
-    httpServer.listen(5000, () => {
+    httpServer.listen(PORT, () => {
       console.log(`server started`);
     });
   } catch (err) {
