@@ -1,7 +1,7 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Credentials, LoginCredentials, User } from "./user.type";
 import Users from "../../../db/modules/Users";
-import { ApolloError, UserInputError } from "apollo-server";
+import { UserInputError } from "apollo-server";
 import argon2 from "argon2";
 import { MyCtx } from "src/graphql/types";
 
@@ -11,7 +11,7 @@ export class UserResolver {
   async me(@Ctx() { userId }: MyCtx) {
     try {
       if (!userId) {
-        return new ApolloError("there is no logged in user");
+        return null;
       }
       const user = await Users.getUser("id", userId);
       return user;
