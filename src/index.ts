@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 (async function () {
   const app = express();
+  app.enable("trust proxy");
   const pgSession = connectPg(session);
   const sessionStore = new pgSession({
     pool,
@@ -35,6 +36,7 @@ const PORT = process.env.PORT || 5000;
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       },
+      proxy: true,
       secret: process.env.SECRET!,
       resave: false,
       saveUninitialized: false,
