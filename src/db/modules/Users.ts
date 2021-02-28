@@ -46,8 +46,8 @@ export default {
     try {
       await client.query("BEGIN");
       const user = await client.query(
-        `UPDATE users SET avatar=$1 WHERE id=${userId} RETURNING id username email avatar created_at`,
-        [newAvatart]
+        `UPDATE users SET avatar=$1 WHERE id=$2 RETURNING id username email avatar created_at`,
+        [newAvatart, userId]
       );
       await client.query("COMMIT");
       return user.rows[0];
