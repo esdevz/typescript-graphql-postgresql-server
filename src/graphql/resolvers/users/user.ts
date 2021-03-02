@@ -1,7 +1,11 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Credentials, LoginCredentials, User } from "./user.type";
 import Users from "../../../db/modules/Users";
-import { ApolloError, UserInputError } from "apollo-server";
+import {
+  ApolloError,
+  AuthenticationError,
+  UserInputError,
+} from "apollo-server";
 import argon2 from "argon2";
 import { MyCtx } from "src/graphql/types";
 
@@ -54,6 +58,23 @@ export class UserResolver {
       }
       req.session.userId = user.id;
       return user;
+    } catch (err) {
+      console.error(err);
+      return err;
+    }
+  }
+
+  @Mutation(() => User)
+  async updateAvatar(
+    @Arg("newAvatar") newAvatar: string,
+    @Ctx() { userId }: MyCtx
+  ) {
+    if (!userId) {
+      return new AuthenticationError("not autorized");
+    }
+    try {
+      const updatedUser = await Users.updateAvatar(newAvatar, userId);
+      return updatedUser;
     } catch (err) {
       console.error(err);
       return err;
