@@ -46,7 +46,7 @@ export default {
     try {
       await client.query("BEGIN");
       const user = await client.query(
-        `UPDATE users SET avatar=$1 WHERE id=$2 RETURNING id username email avatar created_at`,
+        `UPDATE users SET avatar=$1 WHERE id=$2 RETURNING id , username, email, avatar, created_at`,
         [newAvatart, userId]
       );
       await client.query("COMMIT");
@@ -83,7 +83,8 @@ export default {
            values($1 , $2) , ($2 , $1)
           returning contact as contact_id
           )
-          select  contact_id as id , username , avatar from new_contact inner join users on users.id = contact_id`,
+          select  contact_id as id , username , avatar from new_contact inner join users on users.id = contact_id
+          where contact_id=$2`,
         [userId, contactId]
       );
 
