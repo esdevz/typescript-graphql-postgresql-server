@@ -26,13 +26,16 @@ export class Chat {
   ): Promise<string> {
     try {
       let timestamp = Date.now();
-      await Messages.addMessage(
-        parseInt(to),
-        parseInt(id),
-        username,
-        body,
-        timestamp
-      );
+      if (to !== "0") {
+        await Messages.addMessage(
+          parseInt(to),
+          parseInt(id),
+          username,
+          body,
+          timestamp
+        );
+      }
+
       await pubsub.publish(to, {
         sub: to,
         username,
