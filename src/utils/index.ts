@@ -17,3 +17,8 @@ export const formatQuery = (list: number[]): string => {
   const values = list.map((_, idx) => `($1 , $${idx + 1})`);
   return values.slice(1).join(",");
 };
+
+export const formatMsgQuery = (key: string, list: number[]): string => {
+  const values = list.map((_, idx) => `${key} = $${idx + 1}`);
+  return values.join(` or `);
+};
