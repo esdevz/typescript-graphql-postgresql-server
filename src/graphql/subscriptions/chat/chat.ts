@@ -27,13 +27,17 @@ export class Chat {
     try {
       let timestamp = Date.now();
       if (to !== "0") {
-        await Messages.addMessage(
+        const count = await Messages.addMessage(
           parseInt(to),
           parseInt(id),
           username,
           body,
           timestamp
         );
+        // delete old messages
+        if (count > 50) {
+          await Messages.deleteMessages(parseInt(to), count);
+        }
       }
 
       await pubsub.publish(to, {
