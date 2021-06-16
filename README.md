@@ -1,15 +1,15 @@
 # about
 
-a work in progress graphql node server build using typescript and type-graphql, <br/>
-made for educational purposes.
+a graphql node server build with typescript, type-graphql, apollo server and node-postgres <br/>
 
-# install
+#### build:
 
-if you didn't install typescript globally run : <br/>
-npx tsc -w
+```
+npm run build
+```
 
-# run
+#### dev server:
 
-npm run dev <br/>
-or <br/>
-npm start
+```
+npm run dev
+```
